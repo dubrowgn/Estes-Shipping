@@ -1,11 +1,11 @@
 # Wp-e-Commerce Estes Shipping
 
-Author: [Dustin Brown](dubrowgn@gmail.com)
-Contributors: 
-Tags: e-commerce, shipping, estes
-Requires at least: ?
-Tested up to: 3.5.2
-Stable tag: 1.0.1
+Author: [Dustin Brown](dubrowgn@gmail.com)  
+Contributors:  
+Tags: e-commerce, shipping, estes  
+Requires at least: ?  
+Tested up to: 3.5.2  
+Stable tag: 1.0.1  
 
 Estes less-than-load freight module for the WP e-Commerce plugin
 
@@ -29,9 +29,7 @@ The following plugin *must* already be installed:
 
 [WP e-Commerce] (http://wordpress.org/extend/plugins/wp-e-commerce/)
 
-## Frequently Asked Questions
-
 ## Changelog
 
-### 1.0.1 (Aug 7, 2013)
+1.0.1 (Aug 7, 2013)
  * Initial Release
