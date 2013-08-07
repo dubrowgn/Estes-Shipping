@@ -4,7 +4,7 @@
  * Support functions Estes Shipping Module
  * 
  * @author		Dustin Brown <dubrowgn@gmail.com>
- * @link		
+ * @link		https://github.com/dubrowgn/Estes-Shipping
  * @license		GPLv3 <http://www.gnu.org/licenses/>
 */
 
