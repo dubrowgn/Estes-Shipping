@@ -1,6 +1,6 @@
 # Wp-e-Commerce Estes Shipping
 
-Author: [Dustin Brown](dubrowgn@gmail.com)  
+Author: Dustin Brown  
 Contributors:  
 Tags: e-commerce, shipping, estes  
 Requires at least: ?  
