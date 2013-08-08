@@ -8,10 +8,26 @@
  * @license		GPLv3 <http://www.gnu.org/licenses/>
 */
 
+/**
+ * Dumps the $comment parameter to the page using echo, inside HTML
+ * style comments. Useful for viewing debugging information.
+ */
+function wpsc_estes_comment($comment) {
+	echo "\n<!-- {$comment} -->\n";
+} // wpsc_estes_comment( )
+
+/**
+ * Gets the Estes metadata key.
+ */
 function wpsc_estes_get_meta_key() {
 	return WPSC_META_PREFIX . "estes";
 } // wpsc_estes_get_meta_key( )
 
+/**
+ * Gets the product metadata for the specified productID (WP postID).
+ * If no productID is specified, get_the_ID() is called to pull the
+ * productID from context instead.
+ */
 function wpsc_estes_get_product_meta($post_id = null) {
 	// cache the estes metadata key
 	$metaKey = wpsc_estes_get_meta_key();
@@ -29,14 +45,26 @@ function wpsc_estes_get_product_meta($post_id = null) {
 	return $meta;
 } // wpsc_estes_get_product_meta( )
 
+/**
+ * Gets Estes specific Wordpress options. This is just a wrapper around
+ * get_option(), using the correct Estes options key.
+ */
 function wpsc_estes_get_options() {
 	return (array)get_option(WPSC_META_PREFIX . "estes_options");
 } // wpsc_estes_get_options( )
 
+/**
+ * Updates Estes specific Wordpress options. This is just a wrapper
+ * around update_option(), using the correct Estes options key.
+ */
 function wpsc_estes_set_options($options) {
 	update_option(WPSC_META_PREFIX . "estes_options", $options);
 } // wpsc_estes_set_options( )
 
+/**
+ * Returns true if the cart contains any items marked as 'must be
+ * shipped via LTL' in their metadata, false otherwise.
+ */
 function wpsc_estes_is_ltl_in_cart() {
 	global $wpsc_cart;
 	

@@ -4,7 +4,7 @@
  * Plugin Name: Wp-e-Commerce Estes Shipping
  * Plugin URI: https://github.com/dubrowgn/Estes-Shipping
  * Description: Estes less-than-load freight module for the WP e-Commerce plugin
- * Version: 1.0.1
+ * Version: 1.0.2 beta
  * Date: August 7th, 2013
  * Author: Dustin Brown <dubrowgn@gmail.com>
  * Author URI: 
