@@ -20,9 +20,9 @@ class estes_shipping_module {
 	var $internal_name;
 	var $name;
 	var $is_external;
-    var $requires_curl;
-    var $requires_weight;
-    var $needs_zipcode;
+	var $requires_curl;
+	var $requires_weight;
+	var $needs_zipcode;
 
 	function estes_shipping_module () {
 		$this->internal_name = "estes";
@@ -47,7 +47,7 @@ class estes_shipping_module {
 	
 	/* Use this function to return HTML for setting any configuration options for your shipping method
 	 * This will appear in the WP E-Commerce admin area under Products > Settings > Shipping
-     *
+	 *
 	 * Whatever you output here will be wrapped inside the right <form> tags, and also
 	 * a <table> </table> block
 	 */
@@ -142,10 +142,11 @@ class estes_shipping_module {
 		return 0;
 	} // get_item_shipping( )
 
-	/* This function returns an Array of possible shipping choices, and associated costs.
-         * This is for the cart in general, per item charges (As returned from get_item_shipping (above))
-         * will be added on as well. */
-
+	/**
+	 * This function returns an Array of possible shipping choices, and associated costs.
+	 * This is for the cart in general, per item charges (from get_item_shipping, above)
+	 * will be added on as well.
+	 */
 	function getQuote() {
 		// if there are no LTL items in cart, return no quotes available
 		if (!wpsc_estes_is_ltl_in_cart())
@@ -209,21 +210,20 @@ class estes_shipping_module {
 		return $rates;
 	} // getQuote( )
 	
-    /**
-     * Sends request to Estes using cURL
-     * @access protected
-     *
-     * @since 1.0 
-     * @return array of response or empty array if response is invalid
-     */
-    protected function _makeRequest($country, $zip, $state, $weight) {
+	/**
+	 * Sends request to Estes using cURL
+	 * 
+	 * @access protected
+	 * @return array of response or empty array if response is invalid
+	 */
+	protected function _makeRequest($country, $zip, $state, $weight) {
 		// get plugin options
 		$options = wpsc_estes_get_options();
 		
 		// create curl object
 		$ch = curl_init();
 		
-        try {
+		try {
 			// build request body
 			$requestID = date("Y-m-d H:i:s");
 			$class = "100";
@@ -254,11 +254,11 @@ class estes_shipping_module {
 			$output = curl_exec($ch);
 			
 			// get shipping name
-			preg_match('/<rat:serviceLevel>(.*?)<\\/rat:serviceLevel>/', $output, $matches);
+			preg_match('/<rat:serviceLevel>(.*?)<\/rat:serviceLevel>/', $output, $matches);
 			$name = $matches[1];
 			
 			// get shipping price
-			preg_match('/<rat:standardPrice>(.*?)<\\/rat:standardPrice>/', $output, $matches);
+			preg_match('/<rat:standardPrice>(.*?)<\/rat:standardPrice>/', $output, $matches);
 			$cost = 0.0 + $matches[1];
 			
 			// response validation
@@ -267,18 +267,18 @@ class estes_shipping_module {
 			
 			// return shipping rate as new array
 			return array($name => $cost);
-        } // try
-        catch(Exception $e) {
+		} // try
+		catch(Exception $e) {
 			curl_close($ch);
 			throw $e;
-        } // catch
-        
-        // close curl object
+		} // catch
+
+		// close curl object
 		curl_close($ch);
-        
-        // return response
-        return array();
-    } // _makeRequest( )
+
+		// return response
+		return array();
+	} // _makeRequest( )
 } // class
 
 ?>

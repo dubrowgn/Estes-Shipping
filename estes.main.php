@@ -63,9 +63,9 @@ if(is_admin()) {
 		$meta = wpsc_estes_get_product_meta();
 			
 		// output checkbox
-		echo "	<input type='hidden' name='meta[" . $metaKey . "][" . $valueKey . "]' value='0' />\\n";
-		echo "	<input type='checkbox' name='meta[" . $metaKey . "][" . $valueKey . "]' id='wpsc_estes_product_isLtl'" . ($meta[$valueKey] === "on" ? " checked='checked'" : "") . " />\\n";
-		echo "	<label for='wpsc_estes_product_isLtl'>Product must ship less-than-truckload (LTL) freight</label>\\n";
+		echo "	<input type='hidden' name='meta[" . $metaKey . "][" . $valueKey . "]' value='0' />\n";
+		echo "	<input type='checkbox' name='meta[" . $metaKey . "][" . $valueKey . "]' id='wpsc_estes_product_isLtl'" . ($meta[$valueKey] === "on" ? " checked='checked'" : "") . " />\n";
+		echo "	<label for='wpsc_estes_product_isLtl'>Product must ship less-than-truckload (LTL) freight</label>\n";
 	} // wpsc_estes_meta_box( )
 
 	/* End of: WordPress Administration */
