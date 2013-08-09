@@ -26,7 +26,7 @@ if(is_admin()) {
 	 * Add the estes shipping module to the list of available shipping
 	 * modules.
 	 */
-	function estes_shipping_modules() {
+	function wpsc_estes_shipping_modules() {
 		global $wpsc_shipping_modules;
 		
 		$estes = new estes_shipping_module();
@@ -34,7 +34,7 @@ if(is_admin()) {
 				
 		return $wpsc_shipping_modules;
 	} // estes_shipping_modules( )
-	add_filter('wpsc_shipping_modules', 'estes_shipping_modules');
+	add_filter('wpsc_shipping_modules', 'wpsc_estes_shipping_modules');
 	
 	/**
 	 * Add the estes product-specific metadata box to the list of
@@ -80,7 +80,7 @@ else {
 	 * modules. If the cart contains *any* LTL items, all other shipping
 	 * modules are replaced with dummy pseudo shipping modules.
 	 */
-	function estes_shipping_modules() {
+	function wpsc_estes_shipping_modules() {
 		global $wpsc_shipping_modules;
 		
 		// if cart contains LTL items, disable all other shipping methods
@@ -106,7 +106,20 @@ else {
 		// return the updated list
 		return $wpsc_shipping_modules;
 	} // estes_shipping_modules( )
-	add_filter('wpsc_shipping_modules', 'estes_shipping_modules', 103);
+	add_filter('wpsc_shipping_modules', 'wpsc_estes_shipping_modules', 103);
+	
+	function wpsc_estes_no_shipping_options() {
+		$estes = new estes_shipping_module();
+		
+		// complete quote process to generate any error messages;
+		$estes->getQuote();
+		
+		// output any error messages
+		foreach($estes->error_messages as $error) {
+			echo "<p class='validation-error'>{$error}</p>";
+		} // foreach( error )
+	} // wpsc_estes_no_shipping_options( )
+	add_action('wpsc_before_shipping_of_shopping_cart', 'wpsc_estes_no_shipping_options');
 	
 	/* End of: Storefront */
 	

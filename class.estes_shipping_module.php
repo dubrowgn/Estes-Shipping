@@ -23,6 +23,7 @@ class estes_shipping_module {
 	var $requires_curl;
 	var $requires_weight;
 	var $needs_zipcode;
+	var $error_messages;
 
 	function estes_shipping_module () {
 		$this->internal_name = "estes";
@@ -31,6 +32,7 @@ class estes_shipping_module {
 		$this->requires_curl = true;
 		$this->requires_weight = true;
 		$this->needs_zipcode = true;
+		$this->error_messages = array();
 
 		return true;
 	} // estes_shipping_module( )
@@ -196,6 +198,10 @@ class estes_shipping_module {
 		
 		// cache results
 		$_SESSION['wpsc_shipping_cache'][$this->internal_name] = $values;
+		
+		// add an error message if no rates returned
+		if (empty($rates))
+			$this->error_messages[] = "Sorry! Shipping to your address needs special attention. Please call us to complete your order!";
 		
 		// return rates
 		return $rates;
