@@ -56,45 +56,45 @@ class estes_shipping_module {
 	public function getForm() {
 		$options = wpsc_estes_get_options();
 		
-		$output .= '<tr>';
-		$output .= '	<td>Username</td>';
-		$output .= '	<td><input type="text" name="wpsc_estes_options[username]" value="' . htmlentities($options['username']) . '"></td>';
-		$output .= '</tr>';
+		$output .= "<tr>\n";
+		$output .= "	<td>Username</td>\n";
+		$output .= '	<td><input type="text" name="wpsc_estes_options[username]" value="' . htmlentities($options['username']) . '"></td>' . "\n";
+		$output .= "</tr>\n";
 		
-		$output .= '<tr>';
-		$output .= '	<td>Password</td>';
-		$output .= '	<td><input type="password" name="wpsc_estes_options[password]" value="' . htmlentities($options['password']) . '"></td>';
-		$output .= '</tr>';
+		$output .= "<tr>\n";
+		$output .= "	<td>Password</td>\n";
+		$output .= '	<td><input type="password" name="wpsc_estes_options[password]" value="' . htmlentities($options['password']) . '"></td>' . "\n";
+		$output .= "</tr>\n";
 		
-		$output .= '<tr>';
-		$output .= '	<td>Account Number</td>';
-		$output .= '	<td><input type="text" name="wpsc_estes_options[account]" value="' . htmlentities($options['account']) . '"></td>';
-		$output .= '</tr>';
+		$output .= "<tr>\n";
+		$output .= "	<td>Account Number</td>\n";
+		$output .= '	<td><input type="text" name="wpsc_estes_options[account]" value="' . htmlentities($options['account']) . '"></td>' . "\n";
+		$output .= "</tr>\n";
 		
-		$output .= '<tr>';
-		$output .= '	<td>Origin Country Code (US, AU, UK, etc.)</td>';
-		$output .= '	<td><input type="text" name="wpsc_estes_options[countryCode]" value="' . htmlentities($options['countryCode']) . '"></td>';
-		$output .= '</tr>';
+		$output .= "<tr>\n";
+		$output .= "	<td>Origin Country Code (US, AU, UK, etc.)</td>\n";
+		$output .= '	<td><input type="text" name="wpsc_estes_options[countryCode]" value="' . htmlentities($options['countryCode']) . '"></td>' . "\n";
+		$output .= "</tr>\n";
 		
-		$output .= '<tr>';
-		$output .= '	<td>Origin City Name</td>';
-		$output .= '	<td><input type="text" name="wpsc_estes_options[city]" value="' . htmlentities($options['city']) . '"></td>';
-		$output .= '</tr>';
+		$output .= "<tr>\n";
+		$output .= "	<td>Origin City Name</td>\n";
+		$output .= '	<td><input type="text" name="wpsc_estes_options[city]" value="' . htmlentities($options['city']) . '"></td>' . "\n";
+		$output .= "</tr>\n";
 		
-		$output .= '<tr>';
-		$output .= '	<td>Origin State Code (ID, WY, FL, etc.)</td>';
-		$output .= '	<td><input type="text" name="wpsc_estes_options[state]" value="' . htmlentities($options['state']) . '"></td>';
-		$output .= '</tr>';
+		$output .= "<tr>\n";
+		$output .= "	<td>Origin State Code (ID, WY, FL, etc.)</td>\n";
+		$output .= '	<td><input type="text" name="wpsc_estes_options[state]" value="' . htmlentities($options['state']) . '"></td>' . "\n";
+		$output .= "</tr>\n";
 		
-		$output .= '<tr>';
-		$output .= '	<td>Origin Zip Code</td>';
-		$output .= '	<td><input type="text" name="wpsc_estes_options[zip]" value="' . htmlentities($options['zip']) . '"></td>';
-		$output .= '</tr>';
+		$output .= "<tr>\n";
+		$output .= "	<td>Origin Zip Code</td>\n";
+		$output .= '	<td><input type="text" name="wpsc_estes_options[zip]" value="' . htmlentities($options['zip']) . '"></td>' . "\n";
+		$output .= "</tr>\n";
 		
-		$output .= '<tr>';
-		$output .= '	<td>Handling Charge (no dollar sign)</td>';
-		$output .= '	<td><input type="text" name="wpsc_estes_options[handling]" value="' . htmlentities($options['handling']) . '"></td>';
-		$output .= '</tr>';
+		$output .= "<tr>\n";
+		$output .= "	<td>Handling Charge (no dollar sign)</td>\n";
+		$output .= '	<td><input type="text" name="wpsc_estes_options[handling]" value="' . htmlentities($options['handling']) . '"></td>' . "\n";
+		$output .= "</tr>\n";
 
 		return $output;
 	} // getForm( )

@@ -36,13 +36,22 @@ function wpsc_estes_get_product_meta($post_id = null) {
 	if ($post_id === null)
 		$post_id = get_the_ID();
 	
-	// retreive metadata, unwrapping the inner array if successful
-	$meta = get_post_meta($post_id, $metaKey);
+	// retreive product metadata
+	$meta = get_post_meta($post_id, '_wpsc_product_metadata', true);
+
+	// metadata lookup successful? return estes product metadata
+	if (!empty($meta) && !empty($meta[$metaKey]))
+		return $meta[$metaKey];
+
+	// attempt legacy lookup
+	$meta = get_post_meta($post_id, $metaKey, true);
+
+	// legacy metadata lookup successful? return
 	if (!empty($meta))
-		$meta = $meta[0];
+		return $meta;
 	
-	// return whatever we found
-	return $meta;
+	// return empty array
+	return array();
 } // wpsc_estes_get_product_meta( )
 
 /**

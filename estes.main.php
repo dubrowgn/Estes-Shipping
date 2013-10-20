@@ -4,8 +4,8 @@
  * Plugin Name: Wp-e-Commerce Estes Shipping
  * Plugin URI: https://github.com/dubrowgn/Estes-Shipping
  * Description: Estes less-than-load freight module for the WP e-Commerce plugin
- * Version: 1.0.2
- * Date: August 13th, 2013
+ * Version: 1.1.3
+ * Date: Octover 20th, 2013
  * Author: Dustin Brown <dubrowgn@gmail.com>
  * Author URI: 
  */
@@ -35,17 +35,22 @@ if(is_admin()) {
 		return $wpsc_shipping_modules;
 	} // estes_shipping_modules( )
 	add_filter('wpsc_shipping_modules', 'wpsc_estes_shipping_modules');
-	
+
 	/**
 	 * Add the estes product-specific metadata box to the list of
 	 * available product metadata boxes
 	 */
 	function wpsc_estes_init_meta_box() {
+		global $post;
+
 		$pagename = 'wpsc-product';
 		$metabox = 'wpsc_estes_meta_box';
-		add_meta_box($metabox, __( 'Estes Shipping Settings', 'wpsc_estes' ), $metabox, $pagename, 'normal', 'default' );
+
+		// only show estes LTL settings if the product has *no* variations
+		if (!empty($post->ID) && !wpsc_product_has_variations($post->ID))
+			add_meta_box($metabox, __( 'Estes Shipping Settings', 'wpsc_estes' ), $metabox, $pagename, 'normal', 'default' );
 	} // wpsc_estes_init_meta_box( )
-	add_action('admin_menu', 'wpsc_estes_init_meta_box');
+	add_action('admin_head', 'wpsc_estes_init_meta_box');
 
 	/**
 	 * This function gets called when generating any Wp-e-commerce
@@ -53,20 +58,80 @@ if(is_admin()) {
 	 * shipping metadata box.
 	 */
 	function wpsc_estes_meta_box() {
-		// cache meta key
-		$metaKey = wpsc_estes_get_meta_key();
+		// retrieve estes metadata for product
+		$meta = wpsc_estes_get_product_meta();
 		
 		// cache value key
 		$valueKey = "isLtl";
 		
-		// retrieve estes metadata for product
-		$meta = wpsc_estes_get_product_meta();
+		// cache input 'name' field
+		$name = "meta[product_metadata][" . wpsc_estes_get_meta_key() . "][$valueKey]";
 			
 		// output checkbox
-		echo "	<input type='hidden' name='meta[" . $metaKey . "][" . $valueKey . "]' value='0' />\n";
-		echo "	<input type='checkbox' name='meta[" . $metaKey . "][" . $valueKey . "]' id='wpsc_estes_product_isLtl'" . ($meta[$valueKey] === "on" ? " checked='checked'" : "") . " />\n";
+		echo "	<input type='hidden' name='$name' value='0' />\n";
+		echo "	<input type='checkbox' name='$name' id='wpsc_estes_product_isLtl'" . ($meta[$valueKey] === "on" ? " checked='checked'" : "") . " />\n";
 		echo "	<label for='wpsc_estes_product_isLtl'>Product must ship less-than-truckload (LTL) freight</label>\n";
 	} // wpsc_estes_meta_box( )
+
+	/**
+	 * This function gets called when wpsc generates columns for the
+	 * "Variations" meta box. It appends the LTL column, as well as
+	 * generates appropriate CSS and JavaScript markup.
+	 */
+	function wpsc_estes_variation_column_headers($columns) {
+		// init variation management if needed
+		if (empty($GLOBALS['estes_manage_variations_init'])) {
+			$GLOBALS['estes_manage_variations_init'] = true;
+
+			// styles
+			echo "<style type='text/css'>.column-ltl { width: 2.5em; }</style>\n";
+
+			// javascripts
+?>
+			<script>
+				jQuery(document).ready(function() {
+					jQuery(".ltl-cb-all").click(function(e) {
+						jQuery(".ltl-cb-all,.ltl-cb").each(function(i) { this.checked = e.target.checked; });
+					});
+					jQuery(".ltl-cb").click(function(e) {
+						if (!e.srcElement.checked)
+							jQuery(".ltl-cb-all").each(function(i) { this.checked = false; });
+					});
+				});
+			</script>
+<?php
+		} // if
+
+		// add estes LTL column, with "select all" checkbox
+		$columns['ltl'] = "<input type='checkbox' class='ltl-cb-all' style='margin:0; margin-top:3px;' /> LTL";
+
+		// return modified columns array
+		return $columns;
+	} // wpsc_estes_variation_column_headers( )
+	add_filter('wpsc_variation_column_headers', 'wpsc_estes_variation_column_headers');
+
+	/**
+	 * This function gets called when wpsc generates column content
+	 * for the "Variations" meta box. It appends LTL column checkbox.
+	 */
+	function wpsc_estes_manage_product_variations_custom_column($output, $column_name, $item) {
+		// retrieve estes metadata for product
+		$meta = wpsc_estes_get_product_meta($item->ID);
+		
+		// cache value key
+		$valueKey = "isLtl";
+
+		// cache input 'name' field
+		$name = "wpsc_variations[{$item->ID}][product_metadata][" . wpsc_estes_get_meta_key() . "][$valueKey]";
+
+		// output checkbox
+		$output .= "<input type='hidden' name='$name' value='0' />\n";
+		$output .= "<input type='checkbox' class='ltl-cb' name='$name'" . ($meta[$valueKey] === "on" ? " checked='checked'" : "") . " />\n";
+
+		// return updated output
+		return $output;
+	} // wpsc_estes_manage_product_variations_custom_column( )
+	add_filter('wpsc_manage_product_variations_custom_column', 'wpsc_estes_manage_product_variations_custom_column', 10, 3);
 
 	/* End of: WordPress Administration */
 	

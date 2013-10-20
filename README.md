@@ -3,8 +3,8 @@
 Author: Dustin Brown  
 Tags: e-commerce, shipping, estes  
 Requires at least:  
-Tested up to: 3.5.2  
-Stable tag: 1.0.2  
+Tested up to: 3.6.1  
+Stable tag: 1.1.3  
 
 Estes less-than-load freight module for the WP e-Commerce plugin
 
@@ -29,6 +29,10 @@ The following plugin *must* already be installed:
 [WP e-Commerce] (http://wordpress.org/extend/plugins/wp-e-commerce/)
 
 ## Changelog
+
+1.1.3 (Oct 20, 2013)
+ * Added isLTL setting to variations metabox. IsLTL can now only be set on products without variations.
+ * Product metadata related to Estes shipping has been moved under '_wpsc_product_metadata'
 
 1.0.2 (Aug 13, 2013)
  * Added support for error messages on the checkout page
