@@ -4,8 +4,8 @@
  * Plugin Name: Wp-e-Commerce Estes Shipping
  * Plugin URI: https://github.com/dubrowgn/Estes-Shipping
  * Description: Estes less-than-load freight module for the WP e-Commerce plugin
- * Version: 1.1.3
- * Date: Octover 20th, 2013
+ * Version: 1.1.4
+ * Date: October 30th, 2013
  * Author: Dustin Brown <dubrowgn@gmail.com>
  * Author URI: 
  */
@@ -65,7 +65,7 @@ if(is_admin()) {
 		$valueKey = "isLtl";
 		
 		// cache input 'name' field
-		$name = "meta[product_metadata][" . wpsc_estes_get_meta_key() . "][$valueKey]";
+		$name = "meta[_wpsc_product_metadata][" . wpsc_estes_get_meta_key() . "][$valueKey]";
 			
 		// output checkbox
 		echo "	<input type='hidden' name='$name' value='0' />\n";
