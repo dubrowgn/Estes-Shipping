@@ -90,4 +90,27 @@ function wpsc_estes_is_ltl_in_cart() {
 	return false;
 } // wpsc_estes_is_ltl_in_cart( )
 
+/**
+ * Gets the value for the specified key, checking $POST first and then
+ * $_SESSION. If the given key exists in $POST, the value is cached in
+ * $_SESSION. Returns null if neither location contains the given key.
+ */
+function wpsc_estes_get_cacheable_post_value($key) {
+	// first, check POST for $key
+	if (isset($_POST[$key])) {
+		// update session cache and return value from POST
+		$_SESSION["estes_$key"] = $_POST[$key];
+		return $_POST[$key];
+	} // if
+	
+	// next, check $_SESSION
+	if (isset($_SESSION["estes_$key"])) {
+		// return value from session cache
+		return $_SESSION["estes_$key"];
+	} // if
+
+	// no value found for $key, return null
+	return null;
+} // wpsc_estes_get_post_value( )
+
 ?>

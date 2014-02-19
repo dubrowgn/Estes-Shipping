@@ -154,23 +154,14 @@ class estes_shipping_module {
 		if (!wpsc_estes_is_ltl_in_cart())
 			return array();
 		
-		// country
-		if (isset($_POST['country'])) {
-			$country = $_POST['country'];
-			$_SESSION['wpsc_delivery_country'] = $country;
-		} // if
-		else {
-			$country = $_SESSION['wpsc_delivery_country'];
-		} // else
+		// get country from POST
+		$country = wpsc_estes_get_cacheable_post_value('country');
 
-		// zipcode
-		if (isset($_POST['zipcode'])) {
-			$zipcode = $_POST['zipcode'];
-			$_SESSION['wpsc_zipcode'] = $zipcode;
-		} // if
-		else {
-			$zipcode = $_SESSION['wpsc_zipcode'];
-		} // else
+		// get zipcode from POST
+		$zipcode = wpsc_estes_get_cacheable_post_value('zipcode');
+
+		// assume address is residential, unless explicitly commercial
+		$residential = wpsc_estes_get_cacheable_post_value('residential') !== 'false';
 		
 		// total cart weight
 		$weight = wpsc_cart_weight_total();
@@ -183,18 +174,22 @@ class estes_shipping_module {
 		// making multiple cURL requests to Estes
 		$cache = $_SESSION['wpsc_shipping_cache'][$this->internal_name];
 		if ($cache != null && !empty($cache)) {
-			if ($cache['country'] === $country && $cache['zipcode'] === $zipcode && $cache['weight'] === $weight) {
+			if ($cache['country'] === $country &&
+				$cache['zipcode'] === $zipcode &&
+				$cache['weight'] === $weight &&
+				$cache['residential'] === $residential)
+			{
 				$rates = $cache['rates'];
-				if ($rates != null && !empty($rates))
+				if (!empty($rates))
 					return $cache['rates'];
 			} // if
 		} // if
 		
 		// calculate shipping rates
-		$rates = $this->_makeRequest($country, $zipcode, $weight);
+		$rates = $this->_makeRequest($country, $zipcode, $weight, $residential);
 		
 		// build cache values
-		$values = array('country' => $country, 'zipcode' => $zipcode, 'weight' => $weight, 'rates' => $rates);
+		$values = array('country' => $country, 'zipcode' => $zipcode, 'weight' => $weight, 'rates' => $rates, 'residential' => $residential);
 		
 		// cache results
 		$_SESSION['wpsc_shipping_cache'][$this->internal_name] = $values;
@@ -213,7 +208,7 @@ class estes_shipping_module {
 	 * @access protected
 	 * @return array of response or empty array if response is invalid
 	 */
-	protected function _makeRequest($country, $zip, $weight) {
+	protected function _makeRequest($country, $zip, $weight, $residential) {
 		// get plugin options
 		$options = wpsc_estes_get_options();
 		
@@ -224,8 +219,9 @@ class estes_shipping_module {
 			// build request body
 			$requestID = date("Y-m-d H:i:s");
 			$class = "100";
+			$houseDelivery = $residential ? "<rat1:accessorials><rat1:accessorialCode>HD</rat1:accessorialCode></rat1:accessorials>" : "";
 			
-			$request = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rat="http://ws.estesexpress.com/ratequote" xmlns:rat1="http://ws.estesexpress.com/schema/2012/12/ratequote"><soapenv:Header><rat:auth><rat:user>' . $options['username'] . '</rat:user><rat:password>' . $options['password'] . '</rat:password></rat:auth></soapenv:Header><soapenv:Body><rat1:rateRequest><rat1:requestID>' . $requestID . '</rat1:requestID><rat1:account>' . $options['account'] . '</rat1:account><rat1:originPoint><rat1:countryCode>' . $options['countryCode'] . '</rat1:countryCode><rat1:postalCode>' . $options['zip'] . '</rat1:postalCode><rat1:city>' . $options['city'] . '</rat1:city><rat1:stateProvince>' . $options['state'] . '</rat1:stateProvince></rat1:originPoint><rat1:destinationPoint><rat1:countryCode>' . $country . '</rat1:countryCode><rat1:postalCode>' . $zip . '</rat1:postalCode></rat1:destinationPoint><rat1:payor>S</rat1:payor><rat1:terms>PPD</rat1:terms><rat1:stackable>N</rat1:stackable><rat1:baseCommodities><rat1:commodity><rat1:class>' . $class . '</rat1:class><rat1:weight>' . $weight . '</rat1:weight></rat1:commodity></rat1:baseCommodities></rat1:rateRequest></soapenv:Body></soapenv:Envelope>';
+			$request = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rat="http://ws.estesexpress.com/ratequote" xmlns:rat1="http://ws.estesexpress.com/schema/2012/12/ratequote"><soapenv:Header><rat:auth><rat:user>' . $options['username'] . '</rat:user><rat:password>' . $options['password'] . '</rat:password></rat:auth></soapenv:Header><soapenv:Body><rat1:rateRequest><rat1:requestID>' . $requestID . '</rat1:requestID><rat1:account>' . $options['account'] . '</rat1:account><rat1:originPoint><rat1:countryCode>' . $options['countryCode'] . '</rat1:countryCode><rat1:postalCode>' . $options['zip'] . '</rat1:postalCode><rat1:city>' . $options['city'] . '</rat1:city><rat1:stateProvince>' . $options['state'] . '</rat1:stateProvince></rat1:originPoint><rat1:destinationPoint><rat1:countryCode>' . $country . '</rat1:countryCode><rat1:postalCode>' . $zip . '</rat1:postalCode></rat1:destinationPoint><rat1:payor>S</rat1:payor><rat1:terms>PPD</rat1:terms><rat1:stackable>N</rat1:stackable><rat1:baseCommodities><rat1:commodity><rat1:class>' . $class . '</rat1:class><rat1:weight>' . $weight . '</rat1:weight></rat1:commodity></rat1:baseCommodities>' . $houseDelivery . '</rat1:rateRequest></soapenv:Body></soapenv:Envelope>';
 			
 			// build request headers
 			$headers = array(

@@ -4,8 +4,8 @@
  * Plugin Name: Wp-e-Commerce Estes Shipping
  * Plugin URI: https://github.com/dubrowgn/Estes-Shipping
  * Description: Estes less-than-load freight module for the WP e-Commerce plugin
- * Version: 1.1.4
- * Date: October 30th, 2013
+ * Version: 1.2.5
+ * Date: February 19th, 2013
  * Author: Dustin Brown <dubrowgn@gmail.com>
  * Author URI: 
  */
@@ -186,6 +186,21 @@ else {
 	} // wpsc_estes_no_shipping_options( )
 	add_action('wpsc_before_shipping_of_shopping_cart', 'wpsc_estes_no_shipping_options');
 	
+	function wpsc_estes_inject_residential_selector() {
+		// get is-residential value from POST data
+		$isResidential = wpsc_estes_get_cacheable_post_value('residential') !== 'false';
+
+		// inject residential/commercial select box into shipping options using jQuery
+		// this is a terrible hack, but we don't have a hook for doing things the right way...
+		echo "<script>jQuery('input[name=wpsc_submit_zipcode]').before(\"<select name='residential' id='residential'><option value='true'";
+		if ($isResidential)
+			echo " selected='selected'";
+		echo ">Residential</option><option value='false'";
+		if (!$isResidential)
+			echo " selected='selected'";
+		echo ">Commercial</option></select> \");</script>\n";
+	} // 
+	add_action('wpsc_after_shopping_cart_page', 'wpsc_estes_inject_residential_selector');
 	/* End of: Storefront */
 	
 } // else
