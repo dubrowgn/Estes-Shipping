@@ -2,9 +2,9 @@
 
 Author: Dustin Brown  
 Tags: e-commerce, shipping, estes  
-Requires at least:  
-Tested up to: 3.6.1  
-Stable tag: 1.2.5  
+Requires at least: 3.6.1 
+Tested up to: 3.9.1  
+Stable tag: 1.2.6  
 
 Estes less-than-load freight module for the WP e-Commerce plugin
 
@@ -29,6 +29,9 @@ The following plugin *must* already be installed:
 [WP e-Commerce] (http://wordpress.org/extend/plugins/wp-e-commerce/)
 
 ## Changelog
+
+1.2.6 (May 13, 2014)
+ * Compatability fix for WP e-Commerce 3.8.14.1
 
 1.2.5 (Feb 19, 2014)
  * Added user selectable commercial/residential drop down box

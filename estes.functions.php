@@ -78,7 +78,7 @@ function wpsc_estes_is_ltl_in_cart() {
 	global $wpsc_cart;
 	
 	// determine if any items require LTL shipping
-	foreach($wpsc_cart->cart_items as $item) {
+	foreach((array)$wpsc_cart->cart_items as $item) {
 		// get product metadata
 		$meta = wpsc_estes_get_product_meta($item->product_id);
 		
