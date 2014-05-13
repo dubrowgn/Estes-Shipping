@@ -4,7 +4,7 @@
  * Plugin Name: Wp-e-Commerce Estes Shipping
  * Plugin URI: https://github.com/dubrowgn/Estes-Shipping
  * Description: Estes less-than-load freight module for the WP e-Commerce plugin
- * Version: 1.2.6
+ * Version: 1.2.7
  * Date: May 13th, 2014
  * Author: Dustin Brown <dubrowgn@gmail.com>
  * Author URI: 
@@ -36,6 +36,8 @@ if(is_admin()) {
 	} // estes_shipping_modules( )
 	add_filter('wpsc_shipping_modules', 'wpsc_estes_shipping_modules');
 
+
+
 	/**
 	 * Add the estes product-specific metadata box to the list of
 	 * available product metadata boxes
@@ -51,6 +53,8 @@ if(is_admin()) {
 			add_meta_box($metabox, __( 'Estes Shipping Settings', 'wpsc_estes' ), $metabox, $pagename, 'normal', 'default' );
 	} // wpsc_estes_init_meta_box( )
 	add_action('admin_head', 'wpsc_estes_init_meta_box');
+
+
 
 	/**
 	 * This function gets called when generating any Wp-e-commerce
@@ -72,6 +76,8 @@ if(is_admin()) {
 		echo "	<input type='checkbox' name='$name' id='wpsc_estes_product_isLtl'" . ($meta[$valueKey] === "on" ? " checked='checked'" : "") . " />\n";
 		echo "	<label for='wpsc_estes_product_isLtl'>Product must ship less-than-truckload (LTL) freight</label>\n";
 	} // wpsc_estes_meta_box( )
+
+
 
 	/**
 	 * This function gets called when wpsc generates columns for the
@@ -110,6 +116,8 @@ if(is_admin()) {
 	} // wpsc_estes_variation_column_headers( )
 	add_filter('wpsc_variation_column_headers', 'wpsc_estes_variation_column_headers');
 
+
+
 	/**
 	 * This function gets called when wpsc generates column content
 	 * for the "Variations" meta box. It appends LTL column checkbox.
@@ -140,39 +148,38 @@ else {
 	
 	/* Start of: Storefront */
 	
-	/**
-	 * Add the estes shipping module to the list of available shipping
-	 * modules. If the cart contains *any* LTL items, all other shipping
-	 * modules are replaced with dummy pseudo shipping modules.
-	 */
-	function wpsc_estes_shipping_modules() {
+	// Add the estes shipping module to the list of available shipping modules.
+	$estes = new estes_shipping_module();
+	$wpsc_shipping_modules[$estes->getInternalName()] = $estes;
+
+
+
+	function wpsc_estes_before_get_shipping_method() {
 		global $wpsc_shipping_modules;
-		
-		// if cart contains LTL items, disable all other shipping methods
+
+		// if cart contains any LTL items, disable all other shipping methods
 		// by replacing them with a pseudo shipping module instance
 		if (wpsc_estes_is_ltl_in_cart()) {
-			// only need one instance, so cache a new one here
+			// create instances of needed shipping modules
+			$estes = new estes_shipping_module();
 			$pseudo = new pseudo_shipping_module();
 			
-			// get all the shipping method keys
+			// get all available shipping method keys, except for estes
 			$keys = array_keys($wpsc_shipping_modules);
+			$index = array_search($estes->getInternalName(), $keys);
+			if ($index !== false)
+				unset($keys[$index]);
 			
 			// for each key, replace with pseudo module
 			foreach($keys as $key) {
 				$wpsc_shipping_modules[$key] = $pseudo;
 			} // foreach( key )
 		} // if
-		
-		// always inject estes shipping module
-		// if there are no LTL items in the cart, see getQuote()
-		$estes = new estes_shipping_module();
-		$wpsc_shipping_modules[$estes->getInternalName()] = $estes;
-		
-		// return the updated list
-		return $wpsc_shipping_modules;
-	} // estes_shipping_modules( )
-	add_filter('wpsc_shipping_modules', 'wpsc_estes_shipping_modules', 103);
-	
+	} // wpsc_estes_before_get_shipping_method( )
+	add_action( 'wpsc_before_get_shipping_method', 'wpsc_estes_before_get_shipping_method', 1, 0);
+
+
+
 	function wpsc_estes_no_shipping_options() {
 		$estes = new estes_shipping_module();
 		
@@ -186,6 +193,8 @@ else {
 	} // wpsc_estes_no_shipping_options( )
 	add_action('wpsc_before_shipping_of_shopping_cart', 'wpsc_estes_no_shipping_options');
 	
+
+
 	function wpsc_estes_inject_residential_selector() {
 		// get is-residential value from POST data
 		$isResidential = wpsc_estes_get_cacheable_post_value('residential') !== 'false';
